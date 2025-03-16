@@ -46,13 +46,13 @@ exports.updateClave = async (req, res) => {
             return res.status(400).json({ message: 'Se requieren name y description para actualizar' });
         }
         const [result] = await connection.query(
-            'UPDATE items SET name = ?, description = ? WHERE id = ?',
+            'UPDATE claves SET name = ?, description = ? WHERE id = ?',
             [name, description, id]
         );
         if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Item no encontrado' });
+            return res.status(404).json({ message: 'Clave no encontrada' });
         }
-        res.json({ message: 'Item actualizado correctamente' });
+        res.json({ message: 'Clave actualizada correctamente' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
