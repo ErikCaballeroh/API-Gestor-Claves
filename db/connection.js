@@ -4,7 +4,7 @@ const mysql = require('mysql2/promise'); // Usa la versión con soporte para pro
 const connection = mysql.createPool({
     host: 'localhost',     // Dirección del servidor MySQL
     user: 'root',          // Usuario de la base de datos
-    password: '', // Contraseña del usuario
+    password: '1234', // Contraseña del usuario
     database: 'gestor_claves', // Nombre de la base de datos
     port: 3306,            // Puerto de MySQL
     waitForConnections: true,
