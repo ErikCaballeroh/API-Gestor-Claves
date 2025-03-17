@@ -1,12 +1,13 @@
-// db.js (con promesas)
+require('dotenv').config(); // Cargar variables de entorno
+
 const mysql = require('mysql2/promise'); // Usa la versión con soporte para promesas
 
 const connection = mysql.createPool({
-    host: 'localhost',     // Dirección del servidor MySQL
-    user: 'root',          // Usuario de la base de datos
-    password: '1234', // Contraseña del usuario
-    database: 'gestor_claves', // Nombre de la base de datos
-    port: 3306,            // Puerto de MySQL
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

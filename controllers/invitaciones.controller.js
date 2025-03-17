@@ -25,8 +25,6 @@ exports.getInvitacionById = async (req, res) => {
 
 exports.createInvitacion = async (req, res) => {
     try {
-        console.log(req.params);
-
         const { id_familia, fecha_vencimiento } = req.body;
         if (!id_familia || !fecha_vencimiento) {
             return res.status(400).json({ message: 'Datos incompletos' });
