@@ -4,6 +4,7 @@ const clavesRoutes = require('./routes/claves.routes');
 const categoriasRoutes = require('./routes/categorias.routes');
 const familiasRoutes = require('./routes/familias.routes');
 const invitacionesRoutes = require('./routes/invitaciones.routes');
+const rolesRoutes = require('./routes/roles.routes');
 
 app.use(express.json());
 
@@ -12,6 +13,7 @@ app.use('/api/claves', clavesRoutes);
 app.use('/api/categorias', categoriasRoutes);
 app.use('/api/familias', familiasRoutes);
 app.use('/api/invitaciones', invitacionesRoutes);
+app.use('/api/roles', rolesRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
