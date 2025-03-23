@@ -12,7 +12,7 @@ exports.getAllRoles = async (req, res) => {
 exports.getRolById = async (req, res) => {
     try {
         const { id } = req.params;
-        const [rows] = await connection.query('SELECT * FROM roles WHERE id_role = ?', [id]);
+        const [rows] = await connection.query('SELECT * FROM roles WHERE id_rol = ?', [id]);
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Role no encontrado' });
         }
@@ -25,6 +25,7 @@ exports.getRolById = async (req, res) => {
 exports.createRol = async (req, res) => {
     try {
         const { nombre } = req.body;
+
         if (!nombre) {
             return res.status(400).json({ message: 'Datos incompletos' });
         }
@@ -35,3 +36,35 @@ exports.createRol = async (req, res) => {
     }
 }
 
+exports.updateRol = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre } = req.body;
+        if (!nombre) {
+            return res.status(400).json({ message: 'Se requieren todos los campos para actualizar' });
+        }
+
+        const [result] = await connection.query(
+            'UPDATE roles SET nombre_rol = ? WHERE id_rol = ?', [nombre, id]
+        )
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Rol no encontrado' })
+        }
+        res.json({ message: 'Rol actualizado correctamente' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+exports.deleteRol = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const [result] = await connection.query('DELETE FROM roles WHERE id_rol = ?', [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Rol no encontrado' });
+        }
+        res.json({ message: 'Rol eliminado correctamente' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
