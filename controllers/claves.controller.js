@@ -24,15 +24,15 @@ exports.getClaveById = async (req, res) => {
 
 exports.createClave = async (req, res) => {
     try {
-        const { nombre, sitio, clave, categoria, compartir } = req.body;
-        if (!nombre || !sitio || !clave || !categoria || !compartir) {
+        const { nombre, sitio, clave, categoria, compartir, id_usuario } = req.body;
+        if (!nombre || !sitio || !clave || !categoria || !compartir || !id_usuario) {
             return res.status(400).json({ message: 'Datos incompletos' });
         }
         const [result] = await connection.query(
-            'INSERT INTO claves (nombre_clave, sitio, clave, id_categoria, compartir, id_usuario) VALUES (?, ?, ?, ?, ?,1)',
-            [nombre, sitio, clave, categoria, compartir]
+            'INSERT INTO claves (nombre_clave, sitio, clave, id_categoria, compartir, id_usuario) VALUES (?, ?, ?, ?, ?, ?)',
+            [nombre, sitio, clave, categoria, compartir, id_usuario]
         );
-        res.status(201).json({ id: result.insertId, nombre, sitio, clave, categoria, compartir });
+        res.status(201).json({ id: result.insertId, nombre, sitio, clave, categoria, compartir, id_usuario });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -41,13 +41,13 @@ exports.createClave = async (req, res) => {
 exports.updateClave = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description } = req.body;
-        if (!name || !description) {
-            return res.status(400).json({ message: 'Se requieren name y description para actualizar' });
+        const { nombre, sitio, clave, categoria, compartir } = req.body;
+        if (!nombre || !sitio || !clave || !categoria || !compartir) {
+            return res.status(400).json({ message: 'Datos incompletos' });
         }
         const [result] = await connection.query(
-            'UPDATE claves SET name = ?, description = ? WHERE id = ?',
-            [name, description, id]
+            'UPDATE claves SET nombre_clave = ?, sitio = ?, clave = ?, id_categoria = ?, compartir = ? WHERE id_clave = ?',
+            [nombre, sitio, clave, categoria, compartir, id]
         );
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Clave no encontrada' });
