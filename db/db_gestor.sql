@@ -114,13 +114,13 @@ CREATE TABLE claves (
 
 -- Insertar claves de ejemplo
 INSERT INTO claves (nombre_clave, sitio, clave, id_categoria, compartir, id_usuario) VALUES
-('Facebook Personal', 'facebook.com', AES_ENCRYPT('fb123pass', 'key_segura'), 1, 1, 1),
-('Banco Principal', 'bancoprincipal.com', AES_ENCRYPT('banco456', 'key_segura'), 2, 0, 2),
-('Correo Trabajo', 'mail.empresa.com', AES_ENCRYPT('workmail789', 'key_segura'), 3, 1, 3),
-('Netflix Familiar', 'netflix.com', AES_ENCRYPT('familyStream1', 'key_segura'), 4, 1, 4),
-('VPN Empresa', 'vpn.empresa.com', AES_ENCRYPT('secureVpn123', 'key_segura'), 5, 0, 5),
-('Instagram Negocio', 'instagram.com', AES_ENCRYPT('instaBiz456', 'key_segura'), 1, 1, 2),
-('Cuenta Ahorros', 'bancoahorros.com', AES_ENCRYPT('savings789', 'key_segura'), 2, 0, 3);
+('Facebook Personal', 'facebook.com', 'fb123pass', 1, 1, 1),
+('Banco Principal', 'bancoprincipal.com', 'banco456', 2, 0, 2),
+('Correo Trabajo', 'mail.empresa.com', 'workmail789', 3, 1, 3),
+('Netflix Familiar', 'netflix.com', 'familyStream1', 4, 1, 4),
+('VPN Empresa', 'vpn.empresa.com', 'secureVpn123', 5, 0, 5),
+('Instagram Negocio', 'instagram.com', 'instaBiz456', 1, 1, 2),
+('Cuenta Ahorros', 'bancoahorros.com', 'savings789', 2, 0, 3);
 
 -- Mensaje de confirmación
 SELECT 'Base de datos gestor_claves_2 recreada con datos de ejemplo' AS Mensaje;

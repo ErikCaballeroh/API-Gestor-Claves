@@ -24,9 +24,9 @@ async function initializeDatabase() {
         await conn.query(sql);
         conn.release();
 
-        console.log('✅ Base de datos creada o reiniciada exitosamente.');
+        console.log('Base de datos creada exitosamente.');
     } catch (err) {
-        console.error('❌ Error al inicializar la base de datos:', err.message);
+        console.error('Error al inicializar la base de datos:', err.message);
     }
 }
 
