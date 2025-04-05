@@ -34,11 +34,11 @@ CREATE TABLE usuarios (
 
 -- Insertar usuarios de ejemplo (sin familia aún)
 INSERT INTO usuarios (nombre, email, clave, id_rol) VALUES
-('Juan Pérez', 'juan@email.com', SHA2('clave123', 256), 1),
-('María García', 'maria@email.com', SHA2('abc456', 256), 2),
-('Carlos López', 'carlos@email.com', SHA2('xyz789', 256), 3),
-('Ana Martínez', 'ana@email.com', SHA2('ana2023', 256), 3),
-('Luisa Fernández', 'luisa@email.com', SHA2('luisa456', 256), 4);
+('Erik Caballero', 'erik.caballero@gmail.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 1),
+('María García', 'maria@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),
+('Carlos López', 'carlos@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 3),
+('Ana Martínez', 'ana@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 3),
+('Luisa Fernández', 'luisa@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 4);
 
 -- 3. Tabla de familias
 CREATE TABLE familias (
