@@ -2,9 +2,32 @@ require('dotenv').config();
 
 const express = require('express');
 const session = require('express-session');
+const cors = require('cors');
 
 const app = express();
 
+// 🛠️ CORS configurado para Live Server con cookies
+app.use(cors({
+    origin: ['http://localhost:5500', 'http://127.0.0.1:5500'], // Acepta ambos
+    credentials: true // Permite enviar cookies desde el navegador
+}));
+
+// Middleware para leer JSON
+app.use(express.json());
+
+// Configuración de sesiones
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 1000 * 60 * 60, // 1 hora
+        sameSite: 'lax', // Necesario para cookies cross-origin con CORS
+        secure: false // Solo true si usas HTTPS
+    }
+}));
+
+// Importar rutas
 const {
     authRoutes,
     clavesRoutes,
@@ -15,21 +38,13 @@ const {
     usuariosRoutes,
 } = require('./routes');
 
+// Importar middlewares
 const {
     auth,
     checkRole,
 } = require('./middlewares');
 
-app.use(express.json());
-
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 }
-}))
-
-// Usar las rutas con el prefijo /api/ruta
+// Usar las rutas con el prefijo /api
 app.use('/api/auth', authRoutes);
 app.use('/api/claves', auth, clavesRoutes);
 app.use('/api/categorias', auth, categoriasRoutes);
@@ -38,6 +53,7 @@ app.use('/api/invitaciones', auth, invitacionesRoutes);
 app.use('/api/roles', auth, checkRole(1), rolesRoutes);
 app.use('/api/usuarios', auth, checkRole(1), usuariosRoutes);
 
+// Iniciar servidor
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
