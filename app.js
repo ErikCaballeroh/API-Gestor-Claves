@@ -35,8 +35,8 @@ app.use('/api/claves', auth, clavesRoutes);
 app.use('/api/categorias', auth, categoriasRoutes);
 app.use('/api/familias', auth, familiasRoutes);
 app.use('/api/invitaciones', auth, invitacionesRoutes);
-app.use('/api/roles', auth, rolesRoutes);
-app.use('/api/usuarios', auth, usuariosRoutes);
+app.use('/api/roles', auth, checkRole(1), rolesRoutes);
+app.use('/api/usuarios', auth, checkRole(1), usuariosRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {

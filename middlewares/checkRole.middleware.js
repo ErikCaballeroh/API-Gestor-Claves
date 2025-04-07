@@ -6,7 +6,7 @@ const checkRole = (...rolesPermitidos) => {
             return res.status(401).json({ message: "No autenticado" });
         }
 
-        if (!rolesPermitidos.includes(usuario.rol)) {
+        if (!rolesPermitidos.includes(usuario.rol.id)) {
             return res.status(403).json({ message: "Acceso denegado: rol insuficiente" });
         }
 

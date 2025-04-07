@@ -16,10 +16,7 @@ CREATE TABLE roles (
 -- Insertar roles de ejemplo
 INSERT INTO roles (nombre_rol) VALUES 
 ('Administrador'),
-('Usuario Premium'),
-('Usuario Estándar'),
-('Usuario Básico'),
-('Invitado');
+('Usuario');
 
 -- 2. Tabla de usuarios (con id_familia nullable)
 CREATE TABLE usuarios (
@@ -36,9 +33,9 @@ CREATE TABLE usuarios (
 INSERT INTO usuarios (nombre, email, clave, id_rol) VALUES
 ('Erik Caballero', 'erik.caballero@gmail.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 1),
 ('María García', 'maria@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),
-('Carlos López', 'carlos@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 3),
-('Ana Martínez', 'ana@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 3),
-('Luisa Fernández', 'luisa@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 4);
+('Carlos López', 'carlos@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),
+('Ana Martínez', 'ana@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),
+('Luisa Fernández', 'luisa@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2);
 
 -- 3. Tabla de familias
 CREATE TABLE familias (

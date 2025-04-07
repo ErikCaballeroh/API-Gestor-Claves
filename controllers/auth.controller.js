@@ -34,7 +34,17 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const [rows] = await connection.query("SELECT * FROM usuarios WHERE email = ?", [email]);
+        // Consulta modificada para obtener información de rol y familia
+        const [rows] = await connection.query(`
+            SELECT 
+                u.*, 
+                r.nombre_rol as rol_nombre, 
+                f.nombre_familia as familia_nombre 
+            FROM usuarios u
+            LEFT JOIN roles r ON u.id_rol = r.id_rol
+            LEFT JOIN familias f ON u.id_familia = f.id_familia
+            WHERE u.email = ?
+        `, [email]);
 
         if (rows.length === 0) {
             return res.status(401).json({ message: "Usuario no encontrado" });
@@ -48,8 +58,26 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: "Contraseña incorrecta" });
         }
 
-        // Guardar usuario en la sesión (sin la contraseña por seguridad)
-        req.session.user = { id: user.id_usuario, nombre: user.nombre, email: user.email, rol: user.id_rol, familia: user.id_familia };
+        // Crear objetos para rol y familia
+        const rol = {
+            id: user.id_rol,
+            nombre: user.rol_nombre
+        };
+
+        // Familia puede ser null si no tiene
+        const familia = user.id_familia ? {
+            id: user.id_familia,
+            nombre: user.familia_nombre
+        } : null;
+
+        // Guardar usuario en la sesión con los objetos de rol y familia
+        req.session.user = {
+            id: user.id_usuario,
+            nombre: user.nombre,
+            email: user.email,
+            rol: rol,
+            familia: familia
+        };
 
         res.json({ message: "Inicio de sesión exitoso", user: req.session.user });
     } catch (error) {
