@@ -8,7 +8,7 @@ const app = express();
 
 // 🛠️ CORS configurado para Live Server con cookies
 app.use(cors({
-    origin: ['http://localhost:5500', 'http://127.0.0.1:5500'], // Acepta ambos
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Acepta ambos
     credentials: true // Permite enviar cookies desde el navegador
 }));
 
