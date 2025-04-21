@@ -2,17 +2,46 @@ const connection = require('../db/connection');
 
 exports.getAllClaves = async (req, res) => {
     const { user } = req.session;
+    let rows;
 
     try {
-        let rows;
-
-        if (user.rol === 1) {
-            [rows] = await connection.query('SELECT * FROM claves');
+        if (user.rol.id === 1) {
+            [rows] = await connection.query(`
+                SELECT 
+                    cla.*,
+                    cat.id_categoria,
+                    cat.nombre_categoria  
+                FROM claves cla
+                LEFT JOIN categorias cat ON cla.id_categoria = cat.id_categoria
+            `);
         } else {
-            [rows] = await connection.query('SELECT * FROM claves WHERE id_usuario = ?', [user.id]);
+            [rows] = await connection.query(`
+                SELECT 
+                    cla.*,
+                    cat.id_categoria, 
+                    cat.nombre_categoria  
+                FROM claves cla
+                LEFT JOIN categorias cat ON cla.id_categoria = cat.id_categoria
+                WHERE cla.id_usuario = ?
+                `, [user.id]
+            );
         }
 
-        res.json(rows);
+        const claves = rows.map(clave => ({
+            id_clave: clave.id_clave,
+            nombre_clave: clave.nombre_clave,
+            sitio: clave.sitio,
+            usuario: clave.usuario,
+            clave: clave.clave,
+            categoria: {
+                id: clave.id_categoria,
+                nombre: clave.nombre_categoria
+            },
+            compartir: clave.compartir,
+            id_usuario: clave.id_usuario,
+        }));
+
+        res.json(claves);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -24,16 +53,36 @@ exports.getClaveById = async (req, res) => {
     const { user } = req.session;
 
     try {
-        const [rows] = await connection.query(
-            'SELECT * FROM claves WHERE id_clave = ? AND id_usuario = ?',
-            [id, user.id]
+        [rows] = await connection.query(`
+            SELECT 
+                cla.* ,
+                cat.id_categoria, 
+                cat.nombre_categoria  
+            FROM claves cla
+            LEFT JOIN categorias cat ON cla.id_categoria = cat.id_categoria
+            WHERE cla.id_clave = ? AND cla.id_usuario = ?
+            `, [id, user.id]
         );
 
         if (rows.length === 0) {
             return res.status(404).json({ message: 'Registro no encontrado o no autorizado' });
         }
 
-        res.json(rows[0]);
+        const claves = rows.map(clave => ({
+            id_clave: clave.id_clave,
+            nombre_clave: clave.nombre_clave,
+            sitio: clave.sitio,
+            usuario: clave.usuario,
+            clave: clave.clave,
+            categoria: {
+                id: clave.id_categoria,
+                nombre: clave.nombre_categoria
+            },
+            compartir: clave.compartir,
+            id_usuario: clave.id_usuario,
+        }));
+
+        res.json(claves[0]);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

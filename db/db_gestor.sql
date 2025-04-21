@@ -101,6 +101,7 @@ CREATE TABLE claves (
   id_clave bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
   nombre_clave varchar(500) NOT NULL,
   sitio varchar(500) NOT NULL,
+  usuario varchar(500) NOT NULL,
   clave varchar(500) NOT NULL,
   id_categoria bigint NOT NULL,
   compartir bigint NOT NULL,
@@ -110,14 +111,14 @@ CREATE TABLE claves (
 );
 
 -- Insertar claves de ejemplo
-INSERT INTO claves (nombre_clave, sitio, clave, id_categoria, compartir, id_usuario) VALUES
-('Facebook Personal', 'facebook.com', 'fb123pass', 1, 1, 1),
-('Banco Principal', 'bancoprincipal.com', 'banco456', 2, 0, 2),
-('Correo Trabajo', 'mail.empresa.com', 'workmail789', 3, 1, 3),
-('Netflix Familiar', 'netflix.com', 'familyStream1', 4, 1, 4),
-('VPN Empresa', 'vpn.empresa.com', 'secureVpn123', 5, 0, 5),
-('Instagram Negocio', 'instagram.com', 'instaBiz456', 1, 1, 2),
-('Cuenta Ahorros', 'bancoahorros.com', 'savings789', 2, 0, 3);
+INSERT INTO claves (nombre_clave, sitio, usuario, clave, id_categoria, compartir, id_usuario) VALUES
+('Facebook Personal', 'facebook.com', 'usuario_fb', 'fb123pass', 1, 1, 1),
+('Banco Principal', 'bancoprincipal.com', 'usuario_banco', 'banco456', 2, 0, 2),
+('Correo Trabajo', 'mail.empresa.com', 'usuario_work', 'workmail789', 3, 1, 3),
+('Netflix Familiar', 'netflix.com', 'usuario_netflix', 'familyStream1', 4, 1, 4),
+('VPN Empresa', 'vpn.empresa.com', 'usuario_vpn', 'secureVpn123', 5, 0, 5),
+('Instagram Negocio', 'instagram.com', 'usuario_insta', 'instaBiz456', 1, 1, 2),
+('Cuenta Ahorros', 'bancoahorros.com', 'usuario_ahorros', 'savings789', 2, 0, 3);
 
 -- Mensaje de confirmación
 SELECT 'Base de datos gestor_claves_2 recreada con datos de ejemplo' AS Mensaje;
