@@ -110,14 +110,13 @@ exports.updateClave = async (req, res) => {
     const { user } = req.session;
     const { id } = req.params;
     const { nombre, sitio, clave, categoria, compartir } = req.body;
-    const result;
+    let result;
 
     if (!nombre || !sitio || !clave || !categoria || !compartir) {
         return res.status(400).json({ message: 'Datos incompletos' });
     }
 
     try {
-
         if (user.rol.id === 1) {
             [result] = await connection.query(
                 'UPDATE claves SET nombre_clave = ?, sitio = ?, clave = ?, id_categoria = ?, compartir = ? WHERE id_clave = ?',
