@@ -112,7 +112,7 @@ exports.updateClave = async (req, res) => {
     const { nombre, sitio, clave, categoria, compartir } = req.body;
     let result;
 
-    if (!nombre || !sitio || !clave || !categoria || !compartir) {
+    if (!nombre || !sitio || !clave || !categoria || compartir === null) {
         return res.status(400).json({ message: 'Datos incompletos' });
     }
 
