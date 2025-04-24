@@ -92,16 +92,16 @@ exports.createClave = async (req, res) => {
     const { user } = req.session;
 
     try {
-        const { nombre, sitio, clave, categoria, compartir } = req.body;
-        if (!nombre || !sitio || !clave || !categoria || compartir === null) {
+        const { nombre, sitio, usuario, clave, categoria, compartir } = req.body;
+        if (!nombre || !sitio || !usuario || !clave || !categoria || compartir === null) {
             return res.status(400).json({ message: 'Datos incompletos' });
         }
 
         const [result] = await connection.query(
-            'INSERT INTO claves (nombre_clave, sitio, clave, id_categoria, compartir, id_usuario) VALUES (?, ?, ?, ?, ?, ?)',
-            [nombre, sitio, clave, categoria, compartir, user.id]
+            'INSERT INTO claves (nombre_clave, sitio, usuario, clave, id_categoria, compartir, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [nombre, sitio, usuario, clave, categoria, compartir, user.id]
         );
-        res.status(201).json({ id: result.insertId, nombre, sitio, clave, categoria, compartir, usuario: user.id });
+        res.status(201).json({ id: result.insertId, nombre, sitio, usuario, clave, categoria, compartir, usuario_id: user.id });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -110,18 +110,18 @@ exports.createClave = async (req, res) => {
 exports.updateClave = async (req, res) => {
     const { user } = req.session;
     const { id } = req.params;
-    const { nombre, sitio, clave, categoria, compartir } = req.body;
+    const { nombre, sitio, usuario, clave, categoria, compartir } = req.body;
     let result;
 
-    if (!nombre || !sitio || !clave || !categoria || compartir === null) {
+    if (!nombre || !sitio || !usuario || !clave || !categoria || compartir === null) {
         return res.status(400).json({ message: 'Datos incompletos' });
     }
 
     try {
         if (user.rol.id === 1) {
             [result] = await connection.query(
-                'UPDATE claves SET nombre_clave = ?, sitio = ?, clave = ?, id_categoria = ?, compartir = ? WHERE id_clave = ?',
-                [nombre, sitio, clave, categoria, compartir, id]
+                'UPDATE claves SET nombre_clave = ?, sitio = ?, usuario = ?,clave = ?, id_categoria = ?, compartir = ? WHERE id_clave = ?',
+                [nombre, sitio, usuario, clave, categoria, compartir, id]
             );
         } else {
             [result] = await connection.query(
