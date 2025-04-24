@@ -93,9 +93,10 @@ exports.createClave = async (req, res) => {
 
     try {
         const { nombre, sitio, clave, categoria, compartir } = req.body;
-        if (!nombre || !sitio || !clave || !categoria || !compartir) {
+        if (!nombre || !sitio || !clave || !categoria || compartir === null) {
             return res.status(400).json({ message: 'Datos incompletos' });
         }
+
         const [result] = await connection.query(
             'INSERT INTO claves (nombre_clave, sitio, clave, id_categoria, compartir, id_usuario) VALUES (?, ?, ?, ?, ?, ?)',
             [nombre, sitio, clave, categoria, compartir, user.id]
