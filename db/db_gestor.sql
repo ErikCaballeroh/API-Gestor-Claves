@@ -85,10 +85,10 @@ INSERT INTO roles (nombre_rol) VALUES
 
 INSERT INTO usuarios (nombre, email, clave, id_rol) VALUES
 ('Erik Caballero', 'erik.caballero@gmail.com', 'U2FsdGVkX19iAdgvKKGboT6gldf1haFpay4fPyU7D/Y=', 1),
-('María García', 'maria@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),
-('Carlos López', 'carlos@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),
-('Ana Martínez', 'ana@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),
-('Luisa Fernández', 'luisa@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2);
+('María García', 'maria@email.com', 'U2FsdGVkX19iAdgvKKGboT6gldf1haFpay4fPyU7D/Y=', 2),
+('Carlos López', 'carlos@email.com', 'U2FsdGVkX19iAdgvKKGboT6gldf1haFpay4fPyU7D/Y=', 2),
+('Ana Martínez', 'ana@email.com', 'U2FsdGVkX19iAdgvKKGboT6gldf1haFpay4fPyU7D/Y=', 2),
+('Luisa Fernández', 'luisa@email.com', 'U2FsdGVkX19iAdgvKKGboT6gldf1haFpay4fPyU7D/Y=', 2);
 
 INSERT INTO familias (nombre_familia, id_jefe) VALUES
 ('Familia Pérez', 1),
