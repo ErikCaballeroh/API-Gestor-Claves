@@ -112,15 +112,18 @@ exports.createUsuario = async (req, res) => {
 }
 
 exports.updateUsuario = async (req, res) => {
+    const { id } = req.params;
+    const { nombre, email, clave, id_rol, id_familia } = req.body;
+    if (!nombre || !email || !clave || !id_rol || !id_familia) {
+        return res.status(400).json({ message: 'Datos incompletos' });
+    }
+
     try {
-        const { id } = req.params;
-        const { nombre, email, clave, id_rol, id_familia } = req.body;
-        if (!nombre || !email || !clave || !id_rol || !id_familia) {
-            return res.status(400).json({ message: 'Datos incompletos' });
-        }
+
+        const encryptedPassword = CryptoJS.AES.encrypt(clave, SECRET_KEY).toString();
         const [result] = await connection.query(
             'UPDATE usuarios SET nombre = ?, email = ?, clave = ?, id_rol = ?, id_familia = ? WHERE id_usuario = ?',
-            [nombre, email, clave, id_rol, id_familia, id]
+            [nombre, email, encryptedPassword, id_rol, id_familia, id]
         );
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
