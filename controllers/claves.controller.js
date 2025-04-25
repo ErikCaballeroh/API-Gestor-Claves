@@ -141,10 +141,16 @@ exports.updateClave = async (req, res) => {
 
 exports.deleteClave = async (req, res) => {
     const { user } = req.session;
+    const { id } = req.params;
+    let result;
 
     try {
-        const { id } = req.params;
-        const [result] = await connection.query('DELETE FROM claves WHERE id_clave = ? and id_usuario = ?', [id, user.id]);
+        if (user.rol.id === 1) {
+            [result] = await connection.query('DELETE FROM claves WHERE id_clave = ?', [id]);
+        } else {
+            [result] = await connection.query('DELETE FROM claves WHERE id_clave = ? and id_usuario = ?', [id, user.id]);
+        }
+
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: 'Registro no encontrado o no autorizado' });
         }
