@@ -43,6 +43,49 @@ exports.createInvitacion = async (req, res) => {
     }
 };
 
+exports.aceptarInvitacion = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const userId = req.session.user.id; // Suponiendo que estás usando un middleware de autenticación y el ID del usuario está en req.user
+
+        // Buscar la invitación por token
+        const [rows] = await connection.query(
+            'SELECT * FROM invitaciones WHERE token = ?',
+            [token]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Invitación no válida' });
+        }
+
+        const invitacion = rows[0];
+
+        // Verificar si la invitación está vencida
+        const ahora = new Date();
+        const vencimiento = new Date(invitacion.fecha_vencimiento);
+        if (vencimiento < ahora) {
+            return res.status(400).json({ message: 'La invitación ha expirado' });
+        }
+
+        // Agregar al usuario a la familia
+        await connection.query(
+            'UPDATE usuarios SET id_familia = ? WHERE id_usuario = ?',
+            [invitacion.id_familia, userId]
+        );
+
+        // Eliminar la invitación para que no se pueda usar de nuevo (opcional)
+        await connection.query(
+            'DELETE FROM invitaciones WHERE token = ?',
+            [token]
+        );
+
+        res.json({ message: 'Te has unido exitosamente a la familia' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
 exports.updateInvitacion = async (req, res) => {
     try {
         const { id } = req.params;
