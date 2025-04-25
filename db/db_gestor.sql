@@ -31,7 +31,7 @@ CREATE TABLE usuarios (
 
 -- Insertar usuarios de ejemplo (sin familia aún)
 INSERT INTO usuarios (nombre, email, clave, id_rol) VALUES
-('Erik Caballero', 'erik.caballero@gmail.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 1),
+('Erik Caballero', 'erik.caballero@gmail.com', 'U2FsdGVkX19iAdgvKKGboT6gldf1haFpay4fPyU7D/Y=', 1),
 ('María García', 'maria@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),
 ('Carlos López', 'carlos@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),
 ('Ana Martínez', 'ana@email.com', '$2a$10$aKr31cB4IqH1IH2aLznM.Oie/thAuj7OvD03vilogZeg6myeti1Xi', 2),

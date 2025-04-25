@@ -1,5 +1,9 @@
-const bcrypt = require("bcryptjs");
+const CryptoJS = require("crypto-js");
 const connection = require("../db/connection");
+require('dotenv').config();
+
+// Clave secreta para cifrar y descifrar (guárdala en variables de entorno en producción)
+const SECRET_KEY = process.env.SECRET_KEY;
 
 exports.register = async (req, res) => {
     const { nombre, email, clave } = req.body;
@@ -15,14 +19,14 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: "El usuario ya está registrado" });
         }
 
-        // Hashear la contraseña antes de guardarla
-        const hashedPassword = await bcrypt.hash(clave, 10);
+        // Encriptar la contraseña con AES
+        const encryptedPassword = CryptoJS.AES.encrypt(clave, SECRET_KEY).toString();
 
         // Guardar el usuario en la base de datos
         const [result] = await connection.query(
             'INSERT INTO usuarios (nombre, email, clave, id_rol) values(?, ?, ?, ?)',
-            [nombre, email, hashedPassword, 2]
-        )
+            [nombre, email, encryptedPassword, 2]
+        );
 
         res.status(201).json({ message: "Usuario registrado exitosamente", id_usuario: result.insertId });
     } catch (err) {
@@ -34,7 +38,6 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Consulta modificada para obtener información de rol y familia
         const [rows] = await connection.query(`
             SELECT 
                 u.*, 
@@ -52,25 +55,23 @@ exports.login = async (req, res) => {
 
         const user = rows[0];
 
-        // Comparar la contraseña hasheada
-        const passwordMatch = await bcrypt.compare(password, user.clave);
-        if (!passwordMatch) {
+        // Desencriptar la contraseña
+        const decryptedPassword = CryptoJS.AES.decrypt(user.clave, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+
+        if (password !== decryptedPassword) {
             return res.status(401).json({ message: "Contraseña incorrecta" });
         }
 
-        // Crear objetos para rol y familia
         const rol = {
             id: user.id_rol,
             nombre: user.rol_nombre
         };
 
-        // Familia puede ser null si no tiene
         const familia = user.id_familia ? {
             id: user.id_familia,
             nombre: user.familia_nombre
         } : null;
 
-        // Guardar usuario en la sesión con los objetos de rol y familia
         req.session.user = {
             id: user.id_usuario,
             nombre: user.nombre,

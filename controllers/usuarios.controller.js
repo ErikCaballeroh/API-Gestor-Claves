@@ -1,22 +1,95 @@
-const connection = require('../db/connection');
+const CryptoJS = require("crypto-js");
+const connection = require("../db/connection");
+require('dotenv').config();
+
+const SECRET_KEY = process.env.SECRET_KEY;
 
 exports.getAllUsuarios = async (req, res) => {
     try {
-        const [rows] = await connection.query('SELECT * FROM usuarios');
-        res.json(rows);
+        const [rows] = await connection.query(`
+            SELECT 
+                u.id_usuario,
+                u.nombre,
+                u.email,
+                u.clave,
+                r.id_rol,
+                r.nombre_rol,
+                f.id_familia,
+                f.nombre_familia,
+                f.id_jefe
+            FROM usuarios u 
+            LEFT JOIN roles r ON u.id_rol = r.id_rol
+            LEFT JOIN familias f ON u.id_familia = f.id_familia    
+        `);
+
+        const usuarios = rows.map(u => {
+            const decryptedPassword = CryptoJS.AES.decrypt(u.clave, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+
+            return {
+                id_usuario: u.id_usuario,
+                nombre: u.nombre,
+                email: u.email,
+                clave: decryptedPassword,
+                rol: {
+                    id: u.id_rol,
+                    nombre: u.nombre_rol,
+                },
+                familia: {
+                    id: u.id_familia,
+                    nombre: u.nombre_familia,
+                    jefe: u.id_jefe,
+                }
+            }
+        });
+
+        res.json(usuarios);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 }
 
 exports.getUsuarioById = async (req, res) => {
+    const { id } = req.params;
+
     try {
-        const { id } = req.params;
-        const [rows] = await connection.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id]);
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
-        }
-        res.json(rows[0])
+        const [rows] = await connection.query(`
+            SELECT 
+                u.id_usuario,
+                u.nombre,
+                u.email,
+                u.clave,
+                r.id_rol,
+                r.nombre_rol,
+                f.id_familia,
+                f.nombre_familia,
+                f.id_jefe
+            FROM usuarios u 
+            LEFT JOIN roles r ON u.id_rol = r.id_rol
+            LEFT JOIN familias f ON u.id_familia = f.id_familia
+            WHERE u.id_usuario = ?
+        `, [id]);
+
+        const usuarios = rows.map(u => {
+            const decryptedPassword = CryptoJS.AES.decrypt(u.clave, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+
+            return {
+                id_usuario: u.id_usuario,
+                nombre: u.nombre,
+                email: u.email,
+                clave: decryptedPassword,
+                rol: {
+                    id: u.id_rol,
+                    nombre: u.nombre_rol,
+                },
+                familia: {
+                    id: u.id_familia,
+                    nombre: u.nombre_familia,
+                    jefe: u.id_jefe,
+                }
+            }
+        });
+
+        res.json(usuarios[0]);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
