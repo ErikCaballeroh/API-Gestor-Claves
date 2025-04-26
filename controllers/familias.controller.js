@@ -23,13 +23,15 @@ exports.getFamiliaById = async (req, res) => {
 }
 
 exports.createFamilia = async (req, res) => {
+    const { nombre } = req.body;
+    const userId = req.session.user.id;
+    if (!nombre) {
+        return res.status(400).json({ message: 'Datos incompletos' });
+    }
+
     try {
-        const { nombre, jefe } = req.body;
-        if (!nombre || !jefe) {
-            return res.status(400).json({ message: 'Datos incompletos' });
-        }
-        const [result] = await connection.query('INSERT INTO familias (nombre_familia, id_jefe) values(?, ?)', [nombre, jefe]);
-        res.status(201).json({ id: result.insertId, nombre, jefe });
+        const [result] = await connection.query('INSERT INTO familias (nombre_familia, id_jefe) values(?, ?)', [nombre, userId]);
+        res.status(201).json({ id: result.insertId, nombre, jefe: userId });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
