@@ -22,6 +22,50 @@ exports.getFamiliaById = async (req, res) => {
     }
 }
 
+exports.getClavesFamilia = async (req, res) => {
+    const familiaId = req.session.user.familia.id;
+
+    try {
+        const [rows] = await connection.query(`
+            SELECT 
+                c.id_clave,
+                c.nombre_clave,
+                c.sitio,
+                c.usuario AS usuario_sitio,
+                c.clave,
+                c.compartir,
+                cat.nombre_categoria,
+                u.nombre AS nombre_usuario,
+                u.email AS email_usuario,
+                f.nombre_familia
+            FROM 
+                claves c
+            JOIN 
+                usuarios u ON c.id_usuario = u.id_usuario
+            JOIN 
+                familias f ON u.id_familia = f.id_familia
+            LEFT JOIN 
+                categorias cat ON c.id_categoria = cat.id_categoria
+            WHERE 
+                u.id_familia = (SELECT id_familia FROM usuarios WHERE id_usuario = ?)
+                AND c.compartir = 1;
+        `, [familiaId]);
+
+        const claves = rows.map(c => ({
+            id: c.id_clave,
+            sitio: c.sitio,
+            nombre_clave: c.nombre_clave,
+            usuario: c.usuario_sitio,
+            clave: c.clave,
+            nombre_usuario: c.nombre_usuario,
+        }));
+
+        res.json(claves);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 exports.createFamilia = async (req, res) => {
     const { nombre } = req.body;
     const userId = req.session.user.id;
