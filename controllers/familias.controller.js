@@ -75,6 +75,16 @@ exports.createFamilia = async (req, res) => {
 
     try {
         const [result] = await connection.query('INSERT INTO familias (nombre_familia, id_jefe) values(?, ?)', [nombre, userId]);
+
+        connection.query(`
+            UPDATE usuarios SET id_familia = ? WHERE id_usuario = ?
+        `, [result.insertId, userId]);
+
+        req.session.user.familia = {
+            id: result.insertId,
+            nombre: nombre
+        }
+
         res.status(201).json({ id: result.insertId, nombre, jefe: userId });
     } catch (err) {
         res.status(500).json({ error: err.message });
