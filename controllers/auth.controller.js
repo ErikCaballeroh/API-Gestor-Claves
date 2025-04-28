@@ -103,3 +103,48 @@ exports.getSession = (req, res) => {
         res.status(401).json({ message: "No hay sesión activa" });
     }
 };
+
+exports.getUsuarioByCorreo = async (req, res) => {
+    const { correo } = req.params;
+
+    try {
+        const [rows] = await connection.query(`
+            SELECT 
+                u.id_usuario,
+                u.nombre,
+                u.email,
+                u.clave,
+                r.id_rol,
+                r.nombre_rol,
+                f.id_familia,
+                f.nombre_familia,
+                f.id_jefe
+            FROM usuarios u 
+            LEFT JOIN roles r ON u.id_rol = r.id_rol
+            LEFT JOIN familias f ON u.id_familia = f.id_familia
+            WHERE u.email = ?
+        `, [correo]);
+
+        const usuarios = rows.map(u => {
+            const decryptedPassword = CryptoJS.AES.decrypt(u.clave, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+
+            return {
+                id_usuario: u.id_usuario,
+                nombre: u.nombre,
+                email: u.email,
+                rol: {
+                    id: u.id_rol,
+                    nombre: u.nombre_rol,
+                },
+                familia: {
+                    id: u.id_familia,
+                    nombre: u.nombre_familia,
+                    jefe: u.id_jefe,
+                }
+            }
+        });
+        res.json(usuarios[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
