@@ -24,9 +24,11 @@ exports.getInvitacionById = async (req, res) => {
 };
 
 exports.createInvitacion = async (req, res) => {
+    const familiaId = req.session.user.familia.id;
+
     try {
-        const { id_familia, fecha_vencimiento } = req.body;
-        if (!id_familia || !fecha_vencimiento) {
+        const { fecha_vencimiento } = req.body;
+        if (!fecha_vencimiento) {
             return res.status(400).json({ message: 'Datos incompletos' });
         }
 
@@ -35,9 +37,9 @@ exports.createInvitacion = async (req, res) => {
 
         const [result] = await connection.query(
             'INSERT INTO invitaciones (id_familia, token, fecha_vencimiento) VALUES (?, ?, ?)',
-            [id_familia, token, fecha_vencimiento]
+            [familiaId, token, fecha_vencimiento]
         );
-        res.status(201).json({ id: result.insertId, id_familia, token, fecha_vencimiento });
+        res.status(201).json({ id: result.insertId, familia: familiaId, token, fecha_vencimiento });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
