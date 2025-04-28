@@ -75,6 +75,17 @@ exports.aceptarInvitacion = async (req, res) => {
             [invitacion.id_familia, userId]
         );
 
+        const [familias] = await connection.query(
+            'SELECT * FROM familias WHERE id_familia = ?', [invitacion.id_familia]
+        )
+
+        const familia = familias[0];
+
+        req.session.user.familia = {
+            id: familia.id_familia,
+            nombre: familia.nombre_familia,
+        };
+
         // Eliminar la invitación para que no se pueda usar de nuevo (opcional)
         await connection.query(
             'DELETE FROM invitaciones WHERE token = ?',
