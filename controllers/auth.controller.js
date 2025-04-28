@@ -10,6 +10,7 @@ exports.register = async (req, res) => {
     if (!nombre || !email || !clave) {
         return res.status(400).json({ message: 'Datos incompletos' });
     }
+    console.log(req.body);
 
     try {
         // Verificar si el usuario ya existe

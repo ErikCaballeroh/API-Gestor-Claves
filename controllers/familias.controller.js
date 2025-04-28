@@ -23,7 +23,7 @@ exports.getFamiliaById = async (req, res) => {
 }
 
 exports.getClavesFamilia = async (req, res) => {
-    const familiaId = req.session.user.familia.id;
+    const userId = req.session.user.id;
 
     try {
         const [rows] = await connection.query(`
@@ -49,7 +49,7 @@ exports.getClavesFamilia = async (req, res) => {
             WHERE 
                 u.id_familia = (SELECT id_familia FROM usuarios WHERE id_usuario = ?)
                 AND c.compartir = 1;
-        `, [familiaId]);
+        `, [userId]);
 
         const claves = rows.map(c => ({
             id: c.id_clave,
@@ -61,6 +61,36 @@ exports.getClavesFamilia = async (req, res) => {
         }));
 
         res.json(claves);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+exports.getMiembrosFamilia = async (req, res) => {
+    const familiaId = req.session.user.familia.id;
+
+    try {
+        const [rows] = await connection.query(`SELECT * FROM usuarios where id_familia = ?`, [familiaId]);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+exports.expulsarMiembro = async (req, res) => {
+    const userId = req.params.id;
+    const familiaId = req.session.user.familia.id;
+
+    try {
+        const [result] = await connection.query(`
+            UPDATE usuarios SET id_familia = null WHERE id_familia = ? AND id_usuario = ?
+        `, [familiaId, userId]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        res.json({ message: 'Usuario expulsado' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
