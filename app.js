@@ -12,7 +12,7 @@ const allowedOrigins = [
     'http://127.0.0.1:5173',
     'https://frontend-gestor-claves.netlify.app',
     'https://erikcaballeroh.github.io',
-    'https://gestor-claves-front-production.up.railway.app/' // ← Sin barra final ni rutas
+    'https://gestor-claves-front-production.up.railway.app' // ← Sin barra final ni rutas
 ];
 
 app.use(cors({
