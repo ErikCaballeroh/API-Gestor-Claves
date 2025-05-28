@@ -22,7 +22,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         maxAge: 1000 * 60 * 60, // 1 hora
-        sameSite: 'lax', // Necesario para cookies cross-origin con CORS
+        sameSite: 'none', // Necesario para cookies cross-origin con CORS
         secure: false // Solo true si usas HTTPS
     }
 }));
