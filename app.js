@@ -22,8 +22,10 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         maxAge: 1000 * 60 * 60, // 1 hora
-        sameSite: 'none', // Necesario para cookies cross-origin con CORS
-        secure: true // Solo true si usas HTTPS
+        sameSite: 'none', // Obligatorio para cross-origin (Railway es HTTPS)
+        secure: true, // Obligatorio con sameSite='none'
+        httpOnly: true, // Seguridad contra XSS
+        domain: 'api-gestor-claves.up.railway.app' // ← ¡Dominio exacto de tu API!
     }
 }));
 
