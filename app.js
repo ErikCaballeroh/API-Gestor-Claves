@@ -12,7 +12,9 @@ const allowedOrigins = [
     'http://127.0.0.1:5173',
     'https://frontend-gestor-claves.netlify.app',
     'https://erikcaballeroh.github.io',
-    'https://gestor-claves-front-production.up.railway.app' // ← Sin barra final ni rutas
+    'https://gestor-claves-front-production.up.railway.app',
+    // Agrega aquí tu dominio real de frontend Railway:
+    // 'https://frontend-tuapp.up.railway.app'
 ];
 
 app.use(cors({
@@ -25,6 +27,9 @@ app.use(cors({
 // Middleware para leer JSON
 app.use(express.json());
 
+// Configuración para que Express detecte correctamente HTTPS detrás de proxy (Railway)
+app.set('trust proxy', 1); // ← IMPORTANTE para cookies secure
+
 // Configuración de sesiones (arreglada)
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -35,7 +40,7 @@ app.use(session({
         sameSite: 'none',
         secure: true,
         httpOnly: true,
-        domain: '.up.railway.app',
+        domain: '.up.railway.app', // Compartida entre subdominios Railway
     }
 }));
 
