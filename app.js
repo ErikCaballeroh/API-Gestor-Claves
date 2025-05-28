@@ -23,7 +23,7 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60, // 1 hora
         sameSite: 'none', // Necesario para cookies cross-origin con CORS
-        secure: false // Solo true si usas HTTPS
+        secure: true // Solo true si usas HTTPS
     }
 }));
 
