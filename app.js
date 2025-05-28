@@ -8,7 +8,7 @@ const app = express();
 
 // 🛠️ CORS configurado para Live Server con cookies
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Acepta ambos
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://frontend-gestor-claves.netlify.app/'], // Acepta ambos
     credentials: true // Permite enviar cookies desde el navegador
 }));
 
