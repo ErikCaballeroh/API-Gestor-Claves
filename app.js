@@ -11,7 +11,8 @@ const allowedOrigins = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'https://frontend-gestor-claves.netlify.app',
-    'https://erikcaballeroh.github.io' // ← Sin barra final ni rutas
+    'https://erikcaballeroh.github.io',
+    'https://gestor-claves-front-production.up.railway.app/' // ← Sin barra final ni rutas
 ];
 
 app.use(cors({
