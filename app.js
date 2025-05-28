@@ -35,7 +35,7 @@ app.use(session({
         sameSite: 'none',
         secure: true,
         httpOnly: true,
-        // domain: 'api-gestor-claves.up.railway.app' // ← ¡Elimina esto o usa '.railway.app'!
+        domain: '.up.railway.app',
     }
 }));
 
