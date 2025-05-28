@@ -41,4 +41,34 @@ app.use(session({
 // Manejar preflight OPTIONS para todas las rutas
 app.options('*', cors()); // ← Esto es crucial
 
-// ... (el resto de tu código de rutas y servidor)
+// Importar rutas
+const {
+    authRoutes,
+    clavesRoutes,
+    categoriasRoutes,
+    familiasRoutes,
+    invitacionesRoutes,
+    rolesRoutes,
+    usuariosRoutes,
+} = require('./routes');
+
+// Importar middlewares
+const {
+    auth,
+    checkRole,
+} = require('./middlewares');
+
+// Usar las rutas con el prefijo /api
+app.use('/api/auth', authRoutes);
+app.use('/api/claves', auth, clavesRoutes);
+app.use('/api/categorias', auth, categoriasRoutes);
+app.use('/api/familias', auth, familiasRoutes);
+app.use('/api/invitaciones', auth, invitacionesRoutes);
+app.use('/api/roles', auth, checkRole(1), rolesRoutes);
+app.use('/api/usuarios', auth, checkRole(1), usuariosRoutes);
+
+// Iniciar servidor
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
