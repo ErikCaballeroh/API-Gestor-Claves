@@ -65,6 +65,12 @@ const {
 } = require('./middlewares');
 
 // Usar las rutas con el prefijo /api
+
+app.get('/api/', (_, res) => {
+    res.send({
+        ok: true
+    });
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/claves', auth, clavesRoutes);
 app.use('/api/categorias', auth, categoriasRoutes);
