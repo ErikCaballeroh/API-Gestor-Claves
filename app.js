@@ -6,48 +6,49 @@ const cors = require('cors');
 
 const app = express();
 
-// 🛠️ CORS configurado correctamente
 const allowedOrigins = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'https://frontend-gestor-claves.netlify.app',
     'https://erikcaballeroh.github.io',
     'https://gestor-claves-front-production.up.railway.app',
-    // Agrega aquí tu dominio real de frontend Railway:
-    // 'https://frontend-tuapp.up.railway.app'
 ];
 
-app.use(cors({
+const corsOptions = {
     origin: allowedOrigins,
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ← Añade OPTIONS
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
-// Middleware para leer JSON
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// Configuración para que Express detecte correctamente HTTPS detrás de proxy (Railway)
-app.set('trust proxy', 1); // ← IMPORTANTE para cookies secure
+// Necesario si estás detrás de un proxy como Railway
+app.set('trust proxy', 1);
 
-// Configuración de sesiones (arreglada)
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: 1000 * 60 * 60,
-        sameSite: 'none',
-        secure: true,
-        httpOnly: true,
-        domain: '.up.railway.app', // Compartida entre subdominios Railway
-    }
-}));
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Manejar preflight OPTIONS para todas las rutas
-app.options('*', cors()); // ← Esto es crucial
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        proxy: true,
+        cookie: {
+            maxAge: 1000 * 60 * 60,
+            httpOnly: true,
+            sameSite: isProduction ? 'none' : 'lax',
+            secure: isProduction,
+            ...(isProduction ? { domain: process.env.SESSION_COOKIE_DOMAIN } : {}),
+        },
+    })
+);
 
-// Importar rutas
+// Si ya usas app.use(cors(corsOptions)), esto suele bastar.
+// Si quieres conservar el preflight explícito, hazlo con las mismas opciones:
+app.options('*', cors(corsOptions));
+
 const {
     authRoutes,
     clavesRoutes,
@@ -58,19 +59,12 @@ const {
     usuariosRoutes,
 } = require('./routes');
 
-// Importar middlewares
-const {
-    auth,
-    checkRole,
-} = require('./middlewares');
-
-// Usar las rutas con el prefijo /api
+const { auth, checkRole } = require('./middlewares');
 
 app.get('/api/', (_, res) => {
-    res.send({
-        ok: true
-    });
+    res.send({ ok: true });
 });
+
 app.use('/api/auth', authRoutes);
 app.use('/api/claves', auth, clavesRoutes);
 app.use('/api/categorias', auth, categoriasRoutes);
@@ -79,8 +73,7 @@ app.use('/api/invitaciones', auth, invitacionesRoutes);
 app.use('/api/roles', auth, checkRole(1), rolesRoutes);
 app.use('/api/usuarios', auth, checkRole(1), usuariosRoutes);
 
-// Iniciar servidor
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
